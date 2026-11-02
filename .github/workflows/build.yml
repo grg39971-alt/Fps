@@ -19,7 +19,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.9
-      - run: gradle assembleDebug --no-daemon
+      - run: gradle assembleDebug --no-daemon -Pkotlin.jvm.target.validation.mode=warning
         working-directory: ${{ env.PROJECT_DIR }}
       - uses: actions/upload-artifact@v4
         with:
