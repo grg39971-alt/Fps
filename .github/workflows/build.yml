@@ -1,0 +1,27 @@
+name: APK derle
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Zip'i ac, proje klasorunu bul
+        run: |
+          unzip -q *.zip -d src
+          DIR=$(dirname "$(find src -name 'settings.gradle*' | head -n 1)")
+          echo "PROJECT_DIR=$DIR" >> $GITHUB_ENV
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.9
+      - run: gradle assembleDebug --no-daemon
+        working-directory: ${{ env.PROJECT_DIR }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Ping-apk
+          path: ${{ env.PROJECT_DIR }}/**/build/outputs/apk/debug/*.apk
